@@ -24,7 +24,6 @@ public class Main {
             if(p.product instanceof ShippableProduct){
                 shippableProducts.add(p);
             }
-            p.product.updateQuantity(-p.quantity);
         }
         double shippingfees = 0,subtotal = 0;
         for(Pair p:cart){
@@ -43,6 +42,7 @@ public class Main {
         System.out.println("** Checkout receipt **");
         for(Pair p:cart){
             System.out.printf("%dX %s\t%.1f\n",p.quantity,p.product.getName(),p.quantity*p.product.getPrice());
+            p.product.updateQuantity(-p.quantity);
         }
         System.out.println("Subtotal\t"+subtotal);
         System.out.println("Shipping\t"+shippingfees);

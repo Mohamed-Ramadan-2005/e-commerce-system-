@@ -26,30 +26,38 @@ public class Main {
             }
             p.product.updateQuantity(-p.quantity);
         }
-        ShippingService.Shipment(shippableProducts);
-        System.out.println();
-        System.out.println("** Checkout receipt **");
         double shippingfees = 0,subtotal = 0;
         for(Pair p:cart){
-            System.out.printf("%dX %s\t%.1f\n",p.quantity,p.product.getName(),p.quantity*p.product.getPrice());
             subtotal+=p.product.getPrice()*p.quantity;
             if(p.product instanceof ShippableProduct){
                 shippingfees+=((ShippableProduct)p.product).getFees()*p.quantity;
             }
         }
+        double amount = shippingfees+subtotal;
+        if(amount>customer.getBalance()){
+            throw new NotEnoughBalanceException("No enough balance");
+        }
+        customer.updateBalance(amount);
+        ShippingService.Shipment(shippableProducts);
+        System.out.println();
+        System.out.println("** Checkout receipt **");
+        for(Pair p:cart){
+            System.out.printf("%dX %s\t%.1f\n",p.quantity,p.product.getName(),p.quantity*p.product.getPrice());
+        }
         System.out.println("Subtotal\t"+subtotal);
         System.out.println("Shipping\t"+shippingfees);
-        double amount = shippingfees+subtotal;
-        System.out.printf("Amount %.1f\t",amount);
+        System.out.printf("Amount %.1f\t\n",amount);
+        System.out.println("Reminig balance\t"+customer.getBalance());
     }
     public static void main(String[] args) {
-        Customer customer = new Customer(100);
+        Customer customer = new Customer(1000);
         ArrayList<Pair> cart = new ArrayList<>();
         LocalDate now = LocalDate.now();
-        ShippableProduct Chesse = new ExpirableShippableProduct("Cheese",100,3,now,200,10);
-        ShippableProduct Biscuits = new ShippableProduct("Biscuits",150,3,700,10);
+        ShippableProduct Chesse = new ExpirableShippableProduct("Cheese",100,10,now,200,10);
+        ShippableProduct Biscuits = new ShippableProduct("Biscuits",150,10,700,10);
         cart.add(new Pair(Chesse,2));
         cart.add(new Pair(Biscuits,1));
+        Checkout(customer,cart);
         Checkout(customer,cart);
     }
 }

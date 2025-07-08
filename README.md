@@ -1,6 +1,6 @@
 
 
-![UI overview screenshot](screenhots/full.png)
+![UI overview screenshot](screenshots/full.png)
 
 
 ![UI overview screenshot](screenhots/stock.png)
